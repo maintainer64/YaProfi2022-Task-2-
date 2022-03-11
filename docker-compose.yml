@@ -1,0 +1,40 @@
+version: '3.2'
+
+volumes:
+  local_pg_data:
+
+services:
+  db:
+    image: postgres:9.6-alpine
+    restart: on-failure
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=database
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - local_pg_data:/var/lib/postgresql/data
+    ports:
+    - 5432:5432
+
+  web:
+    build:
+      context: .
+    environment:
+      - DEBUG=FALSE
+      - PYTHONUNBUFFERED=1
+      - ENVIRONMENT=prod
+      - LOGLEVEL=INFO
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=database
+      - DB_LOGIN=docker
+      - DB_PASSWORD=password
+      - IS_DOCKER=True
+    restart: on-failure
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    command: bash entrypoint.sh
