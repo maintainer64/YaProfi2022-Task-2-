@@ -3,35 +3,36 @@ from typing import List
 
 from fastapi import FastAPI, Response
 
+from application.dto.groups import (
+    GroupCreateInputDTO,
+    GroupCreateOutputDTO,
+    GroupListOutputDTO,
+)
 from application.dto.participant import (
-    ParticipantCreateInputDTO,
     ParticipantCreateOutputDTO,
-    PrizeCreateInputDTO,
-    PrizeCreateOutputDTO,
+    ParticipantCreateInputDTO,
+    FullGroupById,
+    ParticipantCreateOutputDTOWithRecipient,
 )
-from application.dto.promos import (
-    PromoCreateInputDTO,
-    PromoCreateOutputDTO,
-    PromoItemOutputDTO,
-    PromoItemFullOutputDTO,
-    RaffleItemDTO,
-)
-from application.use_cases.participant_logic import add_pat_to_promo, delete_pat_to_promo
-from application.use_cases.prizes_logic import add_prize_to_promo, delete_prize_to_promo
-from application.use_cases.promo_logic import (
+from application.use_cases.group_logic import (
     create_promo_uc,
     get_list_promo_uc,
     update_promo_uc,
     delete_promo_uc,
-    get_promo_by_id,
+    get_group_by_id_uc,
+    toss_uc,
+    get_only_recipients_by_id_uc,
 )
-from application.use_cases.raffle_logic import raffle_uc
+from application.use_cases.participant_logic import (
+    add_pat_to_promo,
+    delete_pat_to_promo,
+)
 from runner.configs import config
 
 logger = logging.getLogger(__name__)
 
-
 app = FastAPI()
+
 
 #
 # System
@@ -72,59 +73,53 @@ def health():
 #
 # API
 #
-@app.post("/promo", response_model=PromoCreateOutputDTO)
-async def create_promo(promo: PromoCreateInputDTO):
-    identifier = await create_promo_uc(promo=promo)
-    return PromoCreateOutputDTO(id=identifier)
+@app.post("/group", response_model=GroupCreateOutputDTO)
+async def create_group(group: GroupCreateInputDTO):
+    return await create_promo_uc(group=group)
 
 
-@app.get("/promo", response_model=List[PromoItemOutputDTO])
-async def list_promo():
+@app.get("/groups", response_model=GroupListOutputDTO)
+async def list_group():
     return await get_list_promo_uc()
 
 
-@app.get("/promo/{promo_id}", response_model=PromoItemFullOutputDTO)
-async def details_promo(promo_id: int):
-    return await get_promo_by_id(promo_id=promo_id)
+@app.get("/group/{group_id}", response_model=FullGroupById)
+async def details_group(group_id: int):
+    return await get_group_by_id_uc(group_id=group_id)
 
 
-@app.put("/promo/{promo_id}")
-async def update_promo(promo_id: int, promo: PromoCreateInputDTO):
-    await update_promo_uc(promo_id=promo_id, promo=promo)
+@app.put("/group/{group_id}", response_model=GroupCreateOutputDTO)
+async def update_group(group_id: int, group: GroupCreateInputDTO):
+    return await update_promo_uc(group_id=group_id, group=group)
+
+
+@app.delete("/group/{group_id}")
+async def delete_group(group_id: int):
+    await delete_promo_uc(group_id=group_id)
     return Response()
 
 
-@app.delete("/promo/{promo_id}")
-async def delete_promo(promo_id: int):
-    await delete_promo_uc(promo_id=promo_id)
+@app.post("/group/{group_id}/participant", response_model=ParticipantCreateOutputDTO)
+async def create_participant(participant: ParticipantCreateInputDTO, group_id: int):
+    identifier = await add_pat_to_promo(participant=participant, group_id=group_id)
+    return ParticipantCreateOutputDTO(id=identifier, name=participant.name, wish=participant.wish)
+
+
+@app.delete("/group/{group_id}/participant/{participant_id}")
+async def delete_participant(participant_id: int, group_id: int):
+    await delete_pat_to_promo(participant_id=participant_id, group_id=group_id)
     return Response()
 
 
-@app.post("/promo/{promo_id}/participant", response_model=ParticipantCreateOutputDTO)
-async def create_participant(participant: ParticipantCreateInputDTO, promo_id: int):
-    identifier = await add_pat_to_promo(participant=participant, promo_id=promo_id)
-    return ParticipantCreateOutputDTO(id=identifier)
+@app.post(
+    "/group/{group_id}/toss", response_model=List[ParticipantCreateOutputDTOWithRecipient],
+)
+async def raffle(group_id: int):
+    return await toss_uc(group_id=group_id)
 
 
-@app.delete("/promo/{promo_id}/participant/{participant_id}")
-async def delete_participant(participant_id: int, promo_id: int):
-    await delete_pat_to_promo(participant_id=participant_id, promo_id=promo_id)
-    return Response()
-
-
-@app.post("/promo/{promo_id}/prize", response_model=PrizeCreateOutputDTO)
-async def create_prize(promo_id: int, prize: PrizeCreateInputDTO):
-    identifier = await add_prize_to_promo(prize=prize, promo_id=promo_id,)
-    return PrizeCreateOutputDTO(id=identifier)
-
-
-@app.post("/promo/{promo_id}/prize/{prize_id}")
-async def delete_prize(promo_id: int, prize_id: int):
-    await delete_prize_to_promo(
-        prize_id=prize_id, promo_id=promo_id,
-    )
-
-
-@app.post("/promo/{promo_id}/raffle", response_model=List[RaffleItemDTO])
-async def raffle(promo_id: int):
-    return await raffle_uc(promo_id=promo_id)
+@app.post(
+    "/group/{group_id}/participant/{participant_id}/recipient", response_model=ParticipantCreateOutputDTO,
+)
+async def recipient(group_id: int, participant_id: int):
+    return await get_only_recipients_by_id_uc(group_id=group_id, participant_id=participant_id)

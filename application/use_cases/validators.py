@@ -9,7 +9,9 @@ logger = logging.getLogger(__name__)
 
 class InternalIntegrationError(HTTPException):
     def __init__(self):
-        super().__init__(status_code=500, detail="Ответ с сервера не может быть обработан валидатором")
+        super().__init__(
+            status_code=500, detail="Ответ с сервера не может быть обработан валидатором",
+        )
 
 
 def validate_dict(response: dict, base_model):

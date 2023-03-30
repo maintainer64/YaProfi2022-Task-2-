@@ -1,4 +1,4 @@
-"""Peewee migrations -- 001_one.py.
+"""Peewee migrations -- 001_first.py.
 
 Some examples (model - class or model name)::
 
@@ -21,7 +21,9 @@ Some examples (model - class or model name)::
 
 """
 
-import peewee as pw
+import datetime as dt  # noqa: F401
+import peewee as pw  # noqa: F401
+from decimal import ROUND_HALF_EVEN  # noqa: F401
 
 try:
     import playhouse.postgres_ext as pw_pext  # noqa: F401
@@ -35,42 +37,42 @@ def migrate(migrator, database, fake=False, **kwargs):
     """Write your migrations here."""
 
     @migrator.create_model
-    class PromoDB(pw.Model):
+    class GroupDB(pw.Model):
         id = pw.AutoField()
         name = pw.CharField(index=True, max_length=255)
-        description = pw.CharField(index=True, max_length=255, null=True)
+        description = pw.CharField(max_length=255, null=True)
 
         class Meta:
-            table_name = "promo"
+            table_name = "group"
 
     @migrator.create_model
-    class MemberDB(pw.Model):
+    class ParticipantDB(pw.Model):
         id = pw.AutoField()
         name = pw.CharField(index=True, max_length=255)
-        promo = pw.ForeignKeyField(
-            backref="members", column_name="promo_id", field="id", model=migrator.orm["promo"], on_delete="CASCADE"
+        wish = pw.CharField(index=True, max_length=255, null=True)
+        group = pw.ForeignKeyField(
+            backref="participants",
+            column_name="group_id",
+            field="id",
+            model=migrator.orm["group"],
+            on_delete="CASCADE",
+        )
+        recipient = pw.ForeignKeyField(
+            backref="participants",
+            column_name="recipient_id",
+            field="id",
+            model="self",
+            null=True,
+            on_delete="SET NULL",
         )
 
         class Meta:
-            table_name = "member"
-
-    @migrator.create_model
-    class PrizeDB(pw.Model):
-        id = pw.AutoField()
-        description = pw.CharField(index=True, max_length=255)
-        promo = pw.ForeignKeyField(
-            backref="prizes", column_name="promo_id", field="id", model=migrator.orm["promo"], on_delete="CASCADE"
-        )
-
-        class Meta:
-            table_name = "prize"
+            table_name = "participant"
 
 
 def rollback(migrator, database, fake=False, **kwargs):
     """Write your rollback migrations here."""
 
-    migrator.remove_model("promo")
+    migrator.remove_model("participant")
 
-    migrator.remove_model("prize")
-
-    migrator.remove_model("member")
+    migrator.remove_model("group")

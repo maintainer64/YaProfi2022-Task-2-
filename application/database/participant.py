@@ -1,14 +1,16 @@
 import peewee
 
 from application.database.bind import database
-from application.database.promo import PromoDB
+from application.database.group import GroupDB
 
 
-class MemberDB(peewee.Model):
+class ParticipantDB(peewee.Model):
     id = peewee.AutoField(primary_key=True, index=True, null=False)
     name = peewee.CharField(index=True, null=False)
-    promo = peewee.ForeignKeyField(PromoDB, index=True, backref="members", on_delete="CASCADE")
+    wish = peewee.CharField(index=True, null=True)
+    group = peewee.ForeignKeyField(GroupDB, index=True, backref="participants", on_delete="CASCADE")
+    recipient = peewee.ForeignKeyField("self", index=True, backref="participants", on_delete="SET NULL", null=True)
 
     class Meta:
-        db_table = "member"
+        db_table = "participant"
         database = database

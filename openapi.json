@@ -1,0 +1,568 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "FastAPI",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group": {
+      "post": {
+        "summary": "Create Group",
+        "operationId": "create_group_group_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupCreateInputDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupCreateOutputDTO"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/groups": {
+      "get": {
+        "summary": "List Group",
+        "operationId": "list_group_groups_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Group Groups Get",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GroupCreateOutputDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group/{group_id}": {
+      "get": {
+        "summary": "Details Group",
+        "operationId": "details_group_group__group_id__get",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Group Id",
+              "type": "integer"
+            },
+            "name": "group_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FullGroupById"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Group",
+        "operationId": "update_group_group__group_id__put",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Group Id",
+              "type": "integer"
+            },
+            "name": "group_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupCreateInputDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupCreateOutputDTO"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Group",
+        "operationId": "delete_group_group__group_id__delete",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Group Id",
+              "type": "integer"
+            },
+            "name": "group_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group/{group_id}/participant": {
+      "post": {
+        "summary": "Create Participant",
+        "operationId": "create_participant_group__group_id__participant_post",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Group Id",
+              "type": "integer"
+            },
+            "name": "group_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParticipantCreateInputDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParticipantCreateOutputDTO"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group/{group_id}/participant/{participant_id}": {
+      "delete": {
+        "summary": "Delete Participant",
+        "operationId": "delete_participant_group__group_id__participant__participant_id__delete",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Participant Id",
+              "type": "integer"
+            },
+            "name": "participant_id",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Group Id",
+              "type": "integer"
+            },
+            "name": "group_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group/{group_id}/toss": {
+      "post": {
+        "summary": "Raffle",
+        "operationId": "raffle_group__group_id__toss_post",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Group Id",
+              "type": "integer"
+            },
+            "name": "group_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Raffle Group  Group Id  Toss Post",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ParticipantCreateOutputDTOWithRecipient"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group/{group_id}/participant/{participant_id}/recipient": {
+      "post": {
+        "summary": "Recipient",
+        "operationId": "recipient_group__group_id__participant__participant_id__recipient_post",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Group Id",
+              "type": "integer"
+            },
+            "name": "group_id",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Participant Id",
+              "type": "integer"
+            },
+            "name": "participant_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParticipantCreateOutputDTO"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FullGroupById": {
+        "title": "FullGroupById",
+        "required": [
+          "name",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "participants": {
+            "title": "Participants",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParticipantCreateOutputDTOWithRecipient"
+            },
+            "default": []
+          }
+        }
+      },
+      "GroupCreateInputDTO": {
+        "title": "GroupCreateInputDTO",
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          }
+        }
+      },
+      "GroupCreateOutputDTO": {
+        "title": "GroupCreateOutputDTO",
+        "required": [
+          "name",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          }
+        }
+      },
+      "HTTPValidationError": {
+        "title": "HTTPValidationError",
+        "type": "object",
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      },
+      "ParticipantCreateInputDTO": {
+        "title": "ParticipantCreateInputDTO",
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "wish": {
+            "title": "Wish",
+            "type": "string"
+          }
+        }
+      },
+      "ParticipantCreateOutputDTO": {
+        "title": "ParticipantCreateOutputDTO",
+        "required": [
+          "name",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "wish": {
+            "title": "Wish",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          }
+        }
+      },
+      "ParticipantCreateOutputDTOWithRecipient": {
+        "title": "ParticipantCreateOutputDTOWithRecipient",
+        "required": [
+          "name",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "wish": {
+            "title": "Wish",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "recipient": {
+            "$ref": "#/components/schemas/ParticipantCreateOutputDTO"
+          }
+        }
+      },
+      "ValidationError": {
+        "title": "ValidationError",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "loc": {
+            "title": "Location",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

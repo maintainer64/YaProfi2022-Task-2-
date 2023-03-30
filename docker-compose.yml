@@ -22,12 +22,13 @@ services:
     build:
       context: .
     environment:
-      - DEBUG=FALSE
+      - DEBUG=False
       - PYTHONUNBUFFERED=1
       - ENVIRONMENT=prod
       - LOGLEVEL=INFO
       - DB_HOST=db
       - DB_PORT=5432
+      - DB_USER=docker
       - DB_NAME=database
       - DB_LOGIN=docker
       - DB_PASSWORD=password

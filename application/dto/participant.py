@@ -1,17 +1,22 @@
+from typing import Optional, List
+
 from pydantic import BaseModel
+
+from application.dto.groups import GroupCreateOutputDTO
 
 
 class ParticipantCreateInputDTO(BaseModel):
     name: str
+    wish: Optional[str] = None
 
 
-class ParticipantCreateOutputDTO(BaseModel):
+class ParticipantCreateOutputDTO(ParticipantCreateInputDTO):
     id: int
 
 
-class PrizeCreateInputDTO(BaseModel):
-    description: str
+class ParticipantCreateOutputDTOWithRecipient(ParticipantCreateOutputDTO):
+    recipient: Optional[ParticipantCreateOutputDTO] = None
 
 
-class PrizeCreateOutputDTO(BaseModel):
-    id: int
+class FullGroupById(GroupCreateOutputDTO):
+    participants: List[ParticipantCreateOutputDTOWithRecipient] = []
